@@ -17,8 +17,8 @@ public class MyBatisGeneratorTool {
     public static void main(String[] args) {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
-        String genCfg = "/src/main/java/resources/mybatis-generator.xml";
-        File configFile = new File(MyBatisGeneratorTool.class.getResource(genCfg).getFile());
+        String genCfg = "/Users/lidechen/Desktop/java/ideaWorkspace/src/main/resources/mybatis-generator.xml";
+        File configFile = new File(genCfg);
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = null;
         try {

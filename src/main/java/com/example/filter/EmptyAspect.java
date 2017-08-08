@@ -36,7 +36,7 @@ public class EmptyAspect {
 
     ThreadLocal<Map<String,Object>> startTime = new ThreadLocal<>();
 
-    @Pointcut("execution(public * com.example.controller..*.*(..))")
+    @Pointcut("execution(public * com.exampl.controller..*.*(..))")
     public void webLog(){}
 
     @Before("webLog()")
