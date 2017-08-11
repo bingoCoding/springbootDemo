@@ -23,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -46,6 +47,7 @@ public class MyBatisConfig  {
         props.put("url", env.getProperty("spring.datasource.url"));
         props.put("username", env.getProperty("spring.datasource.username"));
         props.put("password", env.getProperty("spring.datasource.password"));
+
         return DruidDataSourceFactory.createDataSource(props);
     }
 

@@ -18,7 +18,7 @@ public class UserService implements IUserService{
     public User findUserByUserName(String username) {
         User user=new User();
         user.setUsername(username);
-        user=userDao.selectOne(user);
+//        user=userDao.selectOne(user);
         return user;
     }
 }
