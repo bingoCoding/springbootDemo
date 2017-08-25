@@ -27,11 +27,16 @@ public class DataConverter extends AbstractHttpMessageConverter<MyObj>{
     protected MyObj readInternal(Class<? extends MyObj> aClass, HttpInputMessage httpInputMessage) throws IOException, HttpMessageNotReadableException {
         String temp = StreamUtils.copyToString(httpInputMessage.getBody(), Charset.forName("UTF-8"));
         String[] tempArr = temp.split("-");
-        return null;
+        return new MyObj(tempArr[0],tempArr[1]);
     }
 
     @Override
     protected void writeInternal(MyObj myObj, HttpOutputMessage httpOutputMessage) throws IOException, HttpMessageNotWritableException {
 
+        StringBuffer msg=new StringBuffer("hello")
+                .append(myObj.getA())
+                .append("--")
+                .append(myObj.getB());
+        httpOutputMessage.getBody().write(msg.toString().getBytes());
     }
 }

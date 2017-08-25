@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div class="leftpanel leftpanelwidth" th:fragment="leftMenu">
+	<div class="text-center">
+	</div><!-- org logo -->
+	<div class="text-center">
+	</div><!-- org name -->
+	<ul class="nav nav-pills nav-stacked">
+		<li th:class="((${#httpServletRequest.requestURI}) == '/index' ? 'active' : '')"><a href="/index"><span class="glyphicon glyphicon-home"></span><span style="margin-left:20px;">首页</span></a></li>
+		<li class="parent" th:attrappend="class=((${session.parentMenu}) == 'monitor' ? ' active' : '')"><a href="javascript:void(0);"><span>监控</span></a>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/monitor/onlineClassRoom/monitor' ? 'active' : '')"><a href="/monitor/onlineClassRoom/monitor">在线教室监控</a></li>
+				<li th:class="((${#httpServletRequest.requestURI}) == '/monitor/onlineClassroom/roomInfo/index' ? 'active' : '')"><a href="/monitor/onlineClassroom/roomInfo/index">课程详情</a></li>
+			</ul>
+		</li>
+		
+		<li class="parent" th:attrappend="class=((${session.parentMenu}) == 'course' ? ' active' : '')"><a href="javascript:void(0);"><span>课程管理</span></a>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/onlineClassroom/lecturerTimePlan/index' ? 'active' : '')"><a href="/onlineClassroom/lecturerTimePlan/index">老师排课</a></li>
+			</ul>
+		</li>
+		
+		<li class="parent" th:attrappend="class=((${session.parentMenu}) == 'student' ? ' active' : '')"><a href="javascript:void(0);"><span>学生管理</span></a>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/student/generalInfo/index' ? 'active' : '')"><a href="/student/generalInfo/index">学生</a></li>
+				<li th:class="((${#httpServletRequest.requestURI}) == '/student/yueke/index' ? 'active' : '')"><a href="/student/yueke/index">排课</a></li>
+				<li th:class="((${#httpServletRequest.requestURI}) == '/student/liveErrPushUser/index' ? 'active' : '')"><a href="/student/liveErrPushUser/index">错误推送</a></li>
+				<li th:class="((${#httpServletRequest.requestURI}) == '/student/workdesk/list' ? 'active' : '')"><a href="/student/workdesk/list">工作台</a></li>
+			</ul>
+		</li>
+		
+		
+		<li class="parent" th:attrappend="class=((${session.parentMenu}) == 'lesson' ? ' active' : '')"><a href="javascript:void(0);"><span>排课管理</span></a>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/onlineClassroom/lessonList/index' ? 'active' : '')"><a href="/onlineClassroom/lessonList/index">排课管理</a></li>
+			</ul>
+		</li>
+		
+		<li class="parent" th:attrappend="class=((${session.parentMenu}) == 'onlineLesson' ? ' active' : '')"><a href="javascript:void(0);"><span>课程管理</span></a>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/onlineClassroom/onlineLessonGeneral/index' ? 'active' : '')"><a href="/onlineClassroom/onlineLessonGeneral/index">课程管理</a></li>
+			</ul>
+			<ul class="children">
+				<li th:class="((${#httpServletRequest.requestURI}) == '/onlineClassroom/onlineLessonOrder/index' ? 'active' : '')"><a href="/onlineClassroom/onlineLessonOrder/index">购课记录</a></li>
+			</ul>
+		</li>
+	</ul><!-- menu -->
+</div>
+</html>

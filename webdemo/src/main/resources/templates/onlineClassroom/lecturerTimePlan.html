@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+ <!-- start myModal -->
+	<div class="modal fade" id="import_file_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                排课excel导入
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				 <label class="col-sm-2 control-label">排课上传:</label>
+					<form action="/onlineClassroom/lecturerTimePlan/import" ENCTYPE="multipart/form-data" >
+					   <input id = "import_file_obj" type = "file" name = "file"/>
+					   <br>
+					   <br>
+						<button id="fat-btn" class="btn btn-primary" type="button" onclick="submit_file_import()"> 上传</button>
+					</form>
+					 <span id="lineError">
+					 
+					 </span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+    <div class="mainpanel">
+  <form class="form-inline" role="form">
+			<div class="input-group">
+				<input class="form-control" type="text" size="25" name="date" id="date-range" />
+				<label class="input-group-addon" for="date-range"><span class="glyphicon glyphicon-calendar"></span></label>
+			</div>
+			<div class="form-group" >
+			    <input type="text" class="form-control" placeholder="用户名称或账号" id="user_info" />
+				<div class="input-group">
+	            	<label class="input-group-addon btn" id="searchButton"><span class="glyphicon glyphicon-search"></span></label>
+	            </div>
+            </div>
+   		</form>
+		<div style="margin-top: 10px;">
+			<div class="col-sm-12 input-group">
+				<button  role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" onclick="show_import()">导入</button>
+				<a href="http://melomemo-bj.oss-cn-beijing.aliyuncs.com/%E6%8E%92%E7%8F%AD%E6%A8%A1%E6%9D%BF.xlsx"> 模板下载</a>
+			</div>
+		</div>
+    
+    
+		<div class="col-sm-12 input-group">
+			<div style="margin-top: 10px;">
+				<div class="table-responsive">
+					<table id="dataTable"></table>
+				</div>
+			</div>
+		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+	var beginDate = moment().format('YYYY-MM-DD');
+	var endDate = moment().add('days',7).format('YYYY-MM-DD');
+	$(document).ready(function() {
+		$('#date-range').daterangepicker({
+			singleDatePicker: false,
+			startDate: moment(),
+			endDate: moment().add('days',7),
+			locale : {
+				format : 'YYYY-MM-DD',
+				applyLabel : '确定',
+				cancelLabel : '取消',
+				daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+				monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',
+					'七月', '八月', '九月', '十月', '十一月', '十二月' ],
+				firstDay : 1
+			}
+			
+		});
+		// 面包屑
+		$('#breadcrumbs').html('课程管理/老师排课');
+		initBootstrapTable();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/onlineClassroom/lecturerTimePlan/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/onlineClassroom/lecturerTimePlan/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 50,
+			pageList: [50, 100, 20],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					beginDate:beginDate,
+					endDate:endDate,
+					userInfo: $("#user_info").val(),
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "用户名",
+					field: "user_name",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "日期",
+					field: "day",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "开始时间",
+					field: "start_time",
+					align: "left",
+					valign: "middle"
+				}
+				,
+				{
+					title: "结束时间",
+					field: "end_time",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						sHtml ='<div class="btn-group" style="z-index:99;position: sticky;">';
+							sHtml +=' <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >';
+							sHtml +=' 操作 <span class="caret"></span>';
+							sHtml +='  </button>';
+							sHtml +='  <ul class="dropdown-menu" style="position:sticky">';
+							sHtml +='  <li><a href="#">操作</a></li>';
+							sHtml +='  <li><a href="#" onclick="del(\''+row.id+'\')">删除</a></li>';
+							sHtml +=' </ul>';
+							sHtml +=' </div>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	function del(id) { 
+		
+		 var msg = "您真的确定要删除吗？\n\n请确认！"; 
+		 if (confirm(msg)==true){ 
+		     $.ajax({  
+		         type:'post',      
+		         url:'/onlineClassroom/lecturerTimePlan/delete?id='+id,  
+		         data:$("#saveForm").serialize(),  
+		         cache:false,  
+		         dataType:'json',  
+		         success:function(data){  
+		        	 
+		        	 if (data.code == 0) {
+		            		refreshTable(); 
+		            		alert('删除成功!');
+		            } else {
+		            		alert('删除错误!!!');
+		            }
+		        	 return true; 
+		         }  
+		     });  
+			 
+		 
+		 }else{ 
+		  return false; 
+		 } 
+	} 
+
+	
+	function show_import(){
+		 $("#lineError").html('');	
+		 var file= document.getElementById('import_file_obj');
+		 
+		 if(file.outerHTML){
+	            file.outerHTML=file.outerHTML;
+	      }else{      //FF
+			file.value="";
+	      }
+		$('#import_file_div').modal('show');
+		
+	}
+	
+	function submit_file_import(){
+		
+		 $.ajaxFileUpload
+         (
+             {
+                 url: '/onlineClassroom/lecturerTimePlan/import', //用于文件上传的服务器端请求地址
+                 secureuri: false, //是否需要安全协议，一般设置为false
+                 fileElementId: 'import_file_obj', //文件上传域的ID
+                 dataType: 'json', //返回值类型 一般设置为json
+                 success: function (data, status)  //服务器成功响应处理函数
+                 {
+                	
+                	 if(data.lineError==null||data.lineError==""){
+                		 $("#lineError").html('导入成功!');
+                		 refreshTable();
+                	 }else{
+                		 $("#lineError").html(data.lineError);
+                	 }
+                	 
+                 },
+                 error: function (data, status, e)//服务器响应失败处理函数
+                 {
+                	 alert("系统错误");
+                 }
+             }
+         )
+
+
+		
+	}
+	
+	
+	/*<![CDATA[*/
+
+		function initEvent() {
+		
+		$('#date-range').on('apply.daterangepicker',function(ev, picker) {
+			beginDate = picker.startDate.format('YYYY-MM-DD');
+			endDate = picker.endDate.format('YYYY-MM-DD');
+			
+			//refreshTable();
+		});
+		
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+		
+		
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

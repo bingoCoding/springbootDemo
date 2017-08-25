@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>音乐笔记 - 登录</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+	<link rel="icon" href="http://pianote-img.oss-cn-hangzhou.aliyuncs.com/logo.ico" />
+	
+	<link rel="stylesheet" th:href="@{//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/login.css}" />
+</head>
+<body>
+	<div class="div-outer">
+  		<div class="div-middle">
+    		<div class="div-inner">
+			  <form class="form-signin" action="/login" method="post">
+			  	<div class="form-group">
+		          <h1 class="title title-before"></h1>&nbsp;&nbsp;<h1 style="padding:0 20;">音乐笔记</h1>&nbsp;&nbsp;<h1 class="title title-after"></h1>
+		        </div>
+		        <div class="input-group mb15">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input type="text" class="form-control" id="userName" name="userName" placeholder="用户名" required="required" autofocus="autofocus" />
+                </div>
+                <div class="input-group mb15">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="密码" required="required" />
+                </div>
+		        <button class="btn btn-lg btn-primary btn-block" type="submit" id="login-btn">登录</button>
+		      </form>
+   			</div>
+   		</div>
+   	</div>
+</body>
+</html>

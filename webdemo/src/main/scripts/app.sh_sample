@@ -1,0 +1,110 @@
+#!/bin/sh  
+SCRIPT_PATH=`pwd`
+CURRENT_PATH=${SCRIPT_PATH%/*}
+LOG_PATH=$CURRENT_PATH/log
+APP_PORT=10020
+APP_OPTS="--spring.profiles.active=dev --app.common.auth-disabled=false --logging.path=$LOG_PATH/app --server.tomcat.basedir=$LOG_PATH/access"
+JAVA_OPTS="-Duser.timezone=GMT+8 -server -Xms2048m -Xmx2048m -Xmn1024m -Xss256K"
+JAVA_GC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOG_PATH/gc/heap_dump.log -Xloggc:$LOG_PATH/gc/gc.log"
+APP_HOME=$CURRENT_PATH
+APP_NAME=rt-web-admin
+START_APP_NAME=$APP_NAME
+JAVA_HOME=$JAVA_HOME
+
+APP_PID=0
+getAppPID() {  
+    javaps=`lsof -i:$APP_PORT | awk '{print $2}' | sed -n '2p'`
+    if [ -n "$javaps" ]; then
+        APP_PID=`echo $javaps | awk '{print $1}'`
+    else
+        APP_PID=0
+    fi
+}
+
+findAppName() {
+    TEMP=`ls ../lib/$APP_NAME*`
+    START_APP_NAME=${TEMP##*/}
+}  
+
+start() {
+    getAppPID && findAppName
+    echo "================================================================================================================"
+    if [ $APP_PID -ne 0 ]; then
+        echo "$APP_NAME already started(PID=$APP_PID)"
+        echo "================================================================================================================"
+    else
+    	rm -f nohup.out
+        echo "Starting $APP_NAME"
+        nohup $JAVA_HOME/bin/java $JAVA_OPTS $JAVA_GC_OPTS -jar ../lib/$START_APP_NAME $APP_OPTS &
+		sleep 2
+        tail -f nohup.out
+    fi
+}
+
+stop() {
+    getAppPID && findAppName
+    echo "================================================================================================================"
+    if [ $APP_PID -ne 0 ]; then
+        echo -n "Stopping $START_APP_NAME(PID=$APP_PID)..."
+        kill -15 $APP_PID
+        for i in {1..10}
+        do
+		check
+                if [ $APP_PID -eq 0 ]; then
+            		echo "[Stop Success]"
+            		echo "================================================================================================================"
+			return
+		fi
+        done
+
+		kill -9 $APP_PID
+        for i in {1..10}
+        do
+		check
+                if [ $APP_PID -eq 0 ]; then
+            		echo "[Stop Success]"
+            		echo "================================================================================================================"
+			return
+		fi
+        done
+        
+        echo "[Stop Failed]"
+        echo "================================================================================================================"
+    else
+        echo "$START_APP_NAME is not running"
+        echo "================================================================================================================"
+    fi
+}
+
+restart() {
+	stop && start
+}
+
+status() {
+	getAppPID && findAppName
+	echo "================================================================================================================"
+	if [ $APP_PID -ne 0 ];
+    	then 
+        	echo "$START_APP_NAME is running(pid=$APP_PID)..."
+        	echo "================================================================================================================"
+    	else
+        	echo "$START_APP_NAME isn't running"
+        echo "================================================================================================================"
+    	fi
+}
+
+check() {
+	echo ...
+	sleep 1s
+	getAppPID
+}
+
+case $1 in
+    	start)     	start ;;
+    	stop)      	stop ;;
+    	restart)	restart ;;
+    	status)  	status ;;
+    	*)    		echo "Usage: $0 {start|stop|restart|status}" ;;
+esac
+
+exit 0 

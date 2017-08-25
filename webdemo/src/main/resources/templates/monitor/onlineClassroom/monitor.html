@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+    <div class="mainpanel" style="background-color: #fff;">
+		<div style="width: 100%; position: fixed;z-index: 6; border-bottom: 1px solid #d5dbdb; background-color: #fff;">
+			<div class="col-sm-12 input-group">
+				<div style="margin-left: 0px;margin-top: -5px;">
+					查找时间:<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+					<input id="date-range" name="date" type="text" style="text-align: center; height: 30px;border: 1px solid #ccc;border-radius:4px;"/>
+					<span id="totalRoomsCount"></span>
+					<div class="checkbox" style="width: 60%; float: right;">
+						<!--<label><input name="checkStatus" id="status0" value="0" type="checkbox">取消</label>-->
+						<label><input name="checkStatus" id="status1" value="6" type="checkbox">迟到</label>
+						<label><input name="checkStatus" id="status2" value="5" type="checkbox">旷课</label>
+						<!--<label><input name="checkStatus" id="status3" value="3" type="checkbox">未标记</label>-->
+					</div>
+				</div>
+			</div>
+			<div style="margin-top: 10px;">
+				<div class="col-sm-12 input-group">
+					<div>状态说明:左边方块代表学生,右边方块代表老师</div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-wait" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">等待</button></div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-tch" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">老师未进</button></div>
+					<div class="progress monitor-progress progress-stu"> <button name="progress" class="progress-bar-stu" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></button>学生未进</div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-normal" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">正常</button></div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-over" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">结束</button></div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-cut" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">旷课</button></div>
+					<div class="progress monitor-progress"> <button name="progress" class="progress-bar progress-bar-late" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">迟到</button></div>
+				</div>
+			</div>
+		</div>
+		<div style="padding-top: 120px;" id="roomTimes"></div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body form-horizontal" id="myModalBody">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</body>
+<script src="/js/monitor.js"></script>
+<script src="/js/countly.js"></script>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		Countly.init({
+			app_key: 'f13d4f169d4ba5215d407f454a9eaab52e1b7422',
+			url: 'http://101.200.204.200/'
+		});
+		Countly.track_sessions();
+		Countly.track_pageview();
+		// 面包屑
+		$('#breadcrumbs').html('在线教室/上课监控');
+		var today = $.format.date(new Date(),'yyyy-MM-dd');
+		initMonitorData(today);
+		$('#date-range').daterangepicker({
+			singleDatePicker: true,
+			startDate: today,
+			endDate: today,
+			locale : {
+				format : 'YYYY-MM-DD',
+				applyLabel : '确定',
+				cancelLabel : '取消',
+				daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+				monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',
+					'七月', '八月', '九月', '十月', '十一月', '十二月' ],
+				firstDay : 1
+			}
+		});
+
+		$("[name='checkStatus']:checkbox").bind("click",function(){
+			var chk = $("[name = checkStatus]:checkbox").filter(":checked");
+			console.log(chk);
+			var status = '';
+			chk.each(function () {
+				if($(this).val()){
+					status += $(this).val() + ',';
+				}
+			});
+			if(status != ''){
+				initMonitorData(today, status);
+			}else{
+				initMonitorData(today);
+			}
+		});
+
+		$('#date-range').on('apply.daterangepicker',function(ev, picker) {
+			today = picker.startDate.format('YYYY-MM-DD');
+			initMonitorData(today);
+			Countly.add_event({
+				key:"buttonClick",
+				segmentation: {
+					"id": 'date-range'
+				}
+			});
+		});
+	});
+	/*<![CDATA[*/
+
+	/*]]>*/
+</script>
+<style type="text/css">
+	.monitor-progress {
+		width: 80px;
+		height: 30px;
+		float:left;
+		margin-right: 20px;
+	}
+	.progress-stu {
+		border-width: 0px;
+		font-size: 8px;
+		color: #fff;
+		background-color: #5e5e5e;
+	}
+	.progress-bar-wait {
+		width: 100%;
+		border-width: 0px;
+		background-color: rgba(215, 215, 215, 1);
+	}
+	.progress-bar-tch {
+		font-size: 8px;
+		width: 50%;
+		border-width: 0px;
+		background-color: #5e5e5e;
+	}
+	.progress-bar-stu {
+		float: left;
+		height: 100%;
+		font-size: 8px;
+		line-height: 20px;
+		text-align: center;
+		-webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+		box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+		-webkit-transition: width .6s ease;
+		-o-transition: width .6s ease;
+		transition: width .6s ease;
+		width: 50%;
+		color: rgba(215, 215, 215, 1);
+		background-color: rgba(215, 215, 215, 1);
+		border-width: 0px;
+	}
+	.progress-bar-normal {
+		width: 100%;
+		border-width: 0px;
+		background-color: #5e5e5e;
+	}
+	.progress-bar-over {
+		width: 100%;
+		border-width: 0px;
+		background-color: rgba(0, 128, 0, 1);
+	}
+	.progress-bar-cut {
+		width: 100%;
+		border-width: 0px;
+		background-color: rgba(255, 51, 51, 1);
+	}
+	.progress-bar-late {
+		width: 50%;
+		color: #5e5e5e;
+		border-width: 0px;
+		background-color: rgba(0, 255, 255, 1);
+	}
+</style>
+</html>

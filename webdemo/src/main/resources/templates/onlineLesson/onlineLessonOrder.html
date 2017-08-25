@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+	
+		 <!-- start myModal -->
+	<div class="modal fade" id="create_order_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                添加订单
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				   
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">学生账号</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="studentAccount" name="studentAccount">
+					    </div>
+					</div> 
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程包</label>
+					    <div class="col-sm-9">
+							<select class="selectpicker" id="online_lesson_group" onchange="changePrice()">
+							  <option value="">请选择</option>
+							</select>
+						  </div>
+					</div> 
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">购买价格</label>
+					    <div class="col-sm-5">
+					      <input type="number" class="form-control" id="buyMoney" name="buyMoney">
+					    </div>
+					</div> 
+					
+										 
+				</div>
+				<div class="modal-footer">
+					<button id="saveAppService" type="button" class="btn btn-info" onclick="createOrder()">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+	
+	
+    <div class="mainpanel">
+  <form class="form-inline" role="form">
+
+			<div class="form-group"  style="i">
+			    <input type="text" class="form-control" placeholder="用户名称或账号" id="user_info" />
+				<div class="input-group">
+	            	<label class="input-group-addon btn" id="searchButton"><span class="glyphicon glyphicon-search"></span></label>
+	            </div>
+	       
+            </div>
+            
+             <div style="float:right">
+            	<input class="btn btn-default" type="button" value="添加订单" onclick="showCreateOrder()">
+            </div>
+   		</form>
+    
+		<div class="col-sm-12 input-group">
+			<div style="margin-top: 10px;">
+				<div class="table-responsive">
+					<table id="dataTable"></table>
+				</div>
+			</div>
+		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+	
+		// 面包屑
+		$('#breadcrumbs').html('课程管理/购课记录');
+		initBootstrapTable();
+		initOnlineLessonDetails();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/onlineClassroom/onlineLessonOrder/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/onlineClassroom/onlineLessonOrder/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 10,
+			pageList: [10,20,50],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					userInfo: $("#user_info").val()
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "购课时间",
+					field: "buy_date",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "课程名称",
+					field: "online_lesson_general_name",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						return row.online_lesson_general_name+'('+row.once_min+'分钟)';
+					}
+				},{
+					title: "学生",
+					field: "real_name",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "已完成",
+					field: "",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						return row.lesson_num-row.surplus_lesson_num;
+					}
+				},{
+					title: "未完成",
+					field: "surplus_lesson_num",
+					align: "left",
+					valign: "middle"
+					
+				
+				},{
+					title: "购课价格",
+					field: "real_price",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "状态",
+					field: "",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						sHtml ='<div class="btn-group">';
+							sHtml +=' <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+							sHtml +=' 操作 <span class="caret"></span>';
+							sHtml +='  </button>';
+							sHtml +='  <ul class="dropdown-menu">';
+							sHtml +='  <li><a href="#">选择1</a></li>';
+							sHtml +='  <li><a href="#">操作2</a></li>';
+							sHtml +=' </ul>';
+							sHtml +=' </div>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	
+	function showCreateOrder(){
+		
+		$('#create_order_div').modal('show');
+		
+	}
+	
+	var selectData;
+	
+	//初始化课程明细
+	function initOnlineLessonDetails(){
+		$.ajax({  
+	         type:'post',      
+	         url:'/onlineClassroom//onlineLessonOrder/coursePacket',  
+	         cache:false,  
+	         dataType:'json',  
+	         success:function(data){  
+	        	 //
+	        	  var selDom = $("#online_lesson_group");//根据id获取select的jquery对象
+	        	 for(var i=0;i<data.data.list.length;i++){
+	        		 var obj=data.data.list[i];
+	        		 selDom.append("<option value='"+obj.online_lesson_details_id+"'>"+"(编号:"+obj.lesson_no+")"+obj.lesson_name+' '+obj.lesson_num+'节 ' + obj.lesson_min+'分钟 '+obj.money+'元'+"</option>");//添加option
+	        	 }
+	        	 selectData=data.data.list;
+	        	 
+	         }  
+	     });  
+	}
+	
+	function changePrice(){
+		
+        var val= $("#online_lesson_group option:selected").val() //拿到选中项的值
+        for(var i=0;i<selectData.length;i++){
+   		 var obj=selectData[i];
+   		 if(obj.online_lesson_details_id==val){
+   			 
+   			$('#buyMoney').val(obj.money)
+   			 break;
+   		 }
+   		 
+   		}
+	}
+	
+	//创建订单
+	function createOrder(){
+		//获取手机号
+		if ($('#studentAccount').val() == '') {
+            alert('请输入手机号！');
+            return;
+        }
+		//获取选择
+		if ($('#online_lesson_group').val() == '') {
+            alert('请选择课程包！');
+            return;
+        }
+		
+		//前选择购买金额
+		if ($('#buyMoney').val() == '') {
+            alert('前选择购买金额！');
+            return;
+        }
+				
+		$.ajax({  
+	         type:'post',      
+	         url:'/onlineClassroom/onlineLessonOrder/createOrder?studentAccount='+$('#studentAccount').val()+'&buyMoney='+$('#buyMoney').val()+'&coursePacketId='+$('#online_lesson_group').val(),  
+	         cache:false,  
+	         dataType:'json',  
+	         success:function(data){  
+					  if(data.data.errMsg==null){
+						  $('#create_order_div').modal('hide');
+						  alert('保存成功');
+						  
+					  }  else{
+						  alert(data.data.errMsg);
+					  }    	 
+	         }  
+	     });  
+	}
+	
+	/*<![CDATA[*/
+	function initEvent() {
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

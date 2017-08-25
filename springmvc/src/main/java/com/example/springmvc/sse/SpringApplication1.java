@@ -1,14 +1,14 @@
-package com.example.springmvc.dataConverter;
+package com.example.springmvc.sse;
 
 import com.example.springmvc.webmvc.DemoInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
-
-import java.util.List;
 
 /**
  * @EnableWebMvc 开启springmvc支持
@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
+@EnableAsync
 public class SpringApplication1 extends WebMvcConfigurerAdapter{
 
 
@@ -41,6 +42,7 @@ public class SpringApplication1 extends WebMvcConfigurerAdapter{
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
     }
 
     @Bean
@@ -66,7 +68,7 @@ public class SpringApplication1 extends WebMvcConfigurerAdapter{
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         super.addViewControllers(registry);
-        registry.addViewController("/").setViewName("dataConverter");
+        registry.addViewController("/").setViewName("sse");
     }
 
     /**
@@ -82,27 +84,15 @@ public class SpringApplication1 extends WebMvcConfigurerAdapter{
         configurer.setUseSuffixPatternMatch(false);
     }
 
-
     /**
-     *  configureMessageConverters会覆盖springmvc 里默认注册的多个HttpMessageConverter
-     *  extendMessageConverters仅添加一个自定义的HttpMessageConverter，默认不会覆盖原来的
-     * @param converters
+     * 文件上传解析器
+     * @return
      */
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        super.extendMessageConverters(converters);
-        converters.add(converter());
-    }
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        super.configureMessageConverters(converters);
-//    }
     @Bean
-    public DataConverter converter(){
-        return new DataConverter();
-
+    public MultipartResolver multipartResolver(){
+        CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(1000000);
+        return multipartResolver;
     }
-
-
 
 }

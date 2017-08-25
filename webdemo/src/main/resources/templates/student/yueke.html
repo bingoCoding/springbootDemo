@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	    
+	   
+	</style>
+	
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+	 <!-- start myModal -->
+	<div class="modal fade" id="create_yueke_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                约课
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				   <form class="form-group form-group-sm" id='saveForm'>
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">学生账号</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="studentAccount" name="studentAccount" onblur="getStudentInfo()">
+					    </div>
+					</div> 
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">已购课程</label>
+					    <div class="col-sm-5">
+					      <select class="form-control input-lg" id="selectLesson" name="selectLesson">
+					      	<option value=""></option>
+					      	<option value="1">课程1</option>
+					      	<option value="2">课程2</option>
+					      </select>
+					    </div>
+					</div> 
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">教材</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="studentAccount" name="studentAccount">
+					    </div>
+					</div> 
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">曲目</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="studentAccount" name="studentAccount">
+					    </div>
+					</div> 
+					
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">选择老师</label>
+					    <div class="col-sm-5">
+					      <select class="form-control input-lg" id="selectTeacher" name="selectTeachers">
+					      	<option value=""></option>
+					      	<option value="1">高老师</option>
+					      </select>
+					    </div>
+					</div> 
+					
+					</form>
+					
+										 
+				</div>
+				<div class="modal-footer">
+					<button id="saveAppService" type="button" class="btn btn-info" onclick="create()">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+	
+	
+    <div class="mainpanel">
+ 		<div class="panel panel-default" style="float: left; width: 100%;">
+ 		
+				<table class="table table-striped table-bordered " id="yueke_table">
+					
+					<thead >
+						<tr id='thtr'>
+							
+						</tr>
+					</thead>
+					<tbody id='tbody'>
+						
+
+					</tbody>
+				</table>
+
+			</div>
+ 
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+
+
+	var beginDate = moment().format('YYYY-MM-DD');
+	var endDate = moment().add('days',6).format('YYYY-MM-DD');
+	$(document).ready(function() {
+		// 面包屑
+		$('#breadcrumbs').html('学生/课表');
+		yuekeData();
+	});
+	
+
+	
+	function yuekeData(){
+		 var yueke_table=document.getElementById('yueke_table');
+	 	$.ajax({  
+	         type:'post',      
+	         url:'/student/yueke/data?startDay='+beginDate+'&endDay='+endDate,  
+	         cache:false,  
+	         data:$("#saveForm").serialize(),  
+	         dataType:'json',  
+	         success:function(data){  
+					
+	        	 	 var  tablediv='';
+	        	 	 var data1=data.data.list[0];
+	        	 	 var thtr='';
+	        	 	 var tbody='';
+	        	 	 
+	        	 	
+					 for(var i=0;i<data.data.list.length;i++){
+						 var obj=data.data.list[i];
+						 
+						 if(i==0){
+							 thtr+='<th style="text-align: center;width:2%!important; ">时间</th>';
+							for(var j=0;j<obj.list.length;j++){
+								if(j==0){
+									thtr+='<th style="text-align: center;width:14%!important; "><a href="#" onclick="back()"><<</a>'+chageWeek(obj.list[j].week)+'('+obj.list[j].date_day+')</th>';
+								}else if(j==obj.list.length-1){
+									thtr+='<th style="text-align: center;width:14%!important; ">'+chageWeek(obj.list[j].week)+'('+obj.list[j].date_day+')<a href="#" onclick="forward()">>></a></th>';
+								}else{
+									thtr+='<th style="text-align: center;width:14%!important; ">'+chageWeek(obj.list[j].week)+'('+obj.list[j].date_day+')</th>';
+								}
+								
+							}
+						 }
+						 
+						 
+						 tbody+='<tr>';
+						 
+						 tbody+='<td style="text-align: center;width:2%!important; ">'+obj.start_time+'</td>';
+						 for(var j=0;j<obj.list.length;j++){
+							 var childList=obj.list[j].childList;
+							 var people=''
+							 for(var k=0;k<childList.length;k++){
+								 var time=(childList[k].start_date).substring(11,16)+'至'+(childList[k].end_date).substring(11,16);
+								
+								 people+='['+childList[k].user_from_real_name+' '+childList[k].user_to_real_name +' '+time+']</br>';
+							 }
+							 if(people!=''){
+								 tbody+='<td style="text-align: center;font-size:1px;width:14%!important; " bgcolor="#CCFF99" onclick="createLesson(\''+obj.list[j].date_day+' '+obj.list[j].start_time+'\')">'+people+'</td>';
+							 }else{
+								 tbody+='<td style="text-align: center;font-size:1px;width:14%!important; " onclick="createLesson(\''+obj.list[j].date_day+' '+obj.list[j].start_time+'\')">'+people+'</td>';
+							 }
+							 
+						 }
+						 tbody+='</tr>';
+						 
+					 }
+					
+					 document.getElementById('thtr').innerHTML=thtr;
+					 document.getElementById('tbody').innerHTML=tbody;
+	         }  
+	     });  
+		
+	}
+	
+	function createLesson(day){
+		day+=':00';
+		var nowday=moment(day,'YYYY-MM-DD HH:mm:ss');
+		if(nowday<moment()){
+			alert('时间已过不能约课');
+		}else{
+			$('#create_yueke_div').modal('show');
+		}
+		
+	}
+	
+	function back(){
+		
+		beginDate=moment(beginDate,"YYYY-MM-DD").add('days',-7).format('YYYY-MM-DD');
+		endDate=moment(beginDate,"YYYY-MM-DD").add('days',+6).format('YYYY-MM-DD');
+		
+		yuekeData();
+	}
+	
+	function forward(){
+		
+		beginDate=moment(endDate,"YYYY-MM-DD").add('days',+1).format('YYYY-MM-DD');
+		endDate=moment(beginDate,"YYYY-MM-DD").add('days',+6).format('YYYY-MM-DD');
+
+		yuekeData();	
+	}
+	
+	function getStudentInfo(){
+		var studentAccount=$('#studentAccount').val();
+		
+		$.ajax({  
+	         type:'post',      
+	         url:'/student/studentLessonInfo?studentAccount='+studentAccount,  
+	         cache:false,  
+	         dataType:'json',  
+	         success:function(data){  
+				if(data.data.studentInfo==null){
+					alert('【'+studentAccount+'】账号未注册！');
+				}
+	         }  
+	     });
+		
+	}
+
+	
+	function chageWeek(week){
+		if(week==1){
+			return '周一';
+		}
+		if(week==2){
+			return '周二';
+		}
+		if(week==3){
+			return '周三';
+		}
+		if(week==4){
+			return '周四';
+		}
+		if(week==5){
+			return '周五';
+		}
+		
+		if(week==6){
+			return '周六';
+		}
+		if(week==7){
+			return '周日';
+		}
+		
+	}
+	
+	
+	/*<![CDATA[*/
+
+		function initEvent() {
+		
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+		
+		
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

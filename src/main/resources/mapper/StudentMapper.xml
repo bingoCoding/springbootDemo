@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StudentMapper">
+  <resultMap id="BaseResultMap" type="com.example.model.Student">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="CHAR" property="id" />
+    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
+    <result column="student_points" jdbcType="DOUBLE" property="studentPoints" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="name_py" jdbcType="VARCHAR" property="namePy" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="card_type_no" jdbcType="INTEGER" property="cardTypeNo" />
+    <result column="card_type" jdbcType="VARCHAR" property="cardType" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="nationality" jdbcType="VARCHAR" property="nationality" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="photo_name" jdbcType="VARCHAR" property="photoName" />
+    <result column="photo_ext" jdbcType="VARCHAR" property="photoExt" />
+    <result column="photo_all_name" jdbcType="VARCHAR" property="photoAllName" />
+    <result column="photo_top_name" jdbcType="VARCHAR" property="photoTopName" />
+    <result column="photo_old_name" jdbcType="VARCHAR" property="photoOldName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="post_no" jdbcType="VARCHAR" property="postNo" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="name1" jdbcType="VARCHAR" property="name1" />
+    <result column="phone1" jdbcType="VARCHAR" property="phone1" />
+    <result column="relation1" jdbcType="VARCHAR" property="relation1" />
+    <result column="relation_no1" jdbcType="INTEGER" property="relationNo1" />
+    <result column="metier1" jdbcType="VARCHAR" property="metier1" />
+    <result column="name2" jdbcType="VARCHAR" property="name2" />
+    <result column="phone2" jdbcType="VARCHAR" property="phone2" />
+    <result column="relation2" jdbcType="VARCHAR" property="relation2" />
+    <result column="relation_no2" jdbcType="INTEGER" property="relationNo2" />
+    <result column="metier2" jdbcType="VARCHAR" property="metier2" />
+    <result column="account_balance" jdbcType="DOUBLE" property="accountBalance" />
+    <result column="discount_ppt" jdbcType="DOUBLE" property="discountPpt" />
+    <result column="discount_type" jdbcType="VARCHAR" property="discountType" />
+    <result column="discount_type_id" jdbcType="CHAR" property="discountTypeId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="create_user_id" jdbcType="CHAR" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="del_boolean" jdbcType="CHAR" property="delBoolean" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+    <result column="copy_version" jdbcType="BIGINT" property="copyVersion" />
+    <result column="copy_time" jdbcType="TIMESTAMP" property="copyTime" />
+    <result column="logic_state" jdbcType="INTEGER" property="logicState" />
+    <result column="end_class_time" jdbcType="TIMESTAMP" property="endClassTime" />
+    <result column="member_boolean" jdbcType="INTEGER" property="memberBoolean" />
+    <result column="member_no" jdbcType="VARCHAR" property="memberNo" />
+    <result column="base_org_id" jdbcType="CHAR" property="baseOrgId" />
+    <result column="base_org_no" jdbcType="VARCHAR" property="baseOrgNo" />
+    <result column="base_org_name" jdbcType="VARCHAR" property="baseOrgName" />
+    <result column="timing_practise_card_state" jdbcType="INTEGER" property="timingPractiseCardState" />
+    <result column="timing_practise_card_id" jdbcType="CHAR" property="timingPractiseCardId" />
+    <result column="timing_practise_card_no" jdbcType="VARCHAR" property="timingPractiseCardNo" />
+    <result column="timing_practise_password" jdbcType="VARCHAR" property="timingPractisePassword" />
+    <result column="timing_practise_card_time" jdbcType="TIMESTAMP" property="timingPractiseCardTime" />
+    <result column="timing_practise_card_begin_time" jdbcType="TIMESTAMP" property="timingPractiseCardBeginTime" />
+    <result column="timing_practise_card_school" jdbcType="VARCHAR" property="timingPractiseCardSchool" />
+    <result column="timing_practise_card_school_id" jdbcType="CHAR" property="timingPractiseCardSchoolId" />
+    <result column="timing_practise_card_classroom" jdbcType="VARCHAR" property="timingPractiseCardClassroom" />
+    <result column="timing_practise_card_classroom_id" jdbcType="CHAR" property="timingPractiseCardClassroomId" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, student_no, student_points, name, name_py, sex, card_type_no, card_type, card_no, 
+    birthday, nationality, area, nation, photo_name, photo_ext, photo_all_name, photo_top_name, 
+    photo_old_name, phone, post_no, email, addr, name1, phone1, relation1, relation_no1, 
+    metier1, name2, phone2, relation2, relation_no2, metier2, account_balance, discount_ppt, 
+    discount_type, discount_type_id, update_time, insert_time, create_user_id, create_user_name, 
+    del_boolean, state, version, copy_version, copy_time, logic_state, end_class_time, 
+    member_boolean, member_no, base_org_id, base_org_no, base_org_name, timing_practise_card_state, 
+    timing_practise_card_id, timing_practise_card_no, timing_practise_password, timing_practise_card_time, 
+    timing_practise_card_begin_time, timing_practise_card_school, timing_practise_card_school_id, 
+    timing_practise_card_classroom, timing_practise_card_classroom_id, mobile_phone
+  </sql>
+</mapper>

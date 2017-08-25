@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+    <div class="mainpanel">
+ 		<div class="panel panel-default" style="float: left; width: 30%; height: 500px;">
+ 			 <div class="form-group" style="text-align: center;">
+		       
+		        <img alt="" src="https://oss-cdn-bj.raintai.com/img/boy.png"     style="width: 50%;" >
+		      </div>
+ 			 <div class="form-group" style="text-align: center;">
+		        <label class="form-label">小红</label>
+		      </div>
+ 			 <div class="form-group" style="text-align: center;">
+		        <label class="form-label">1380000000</label>
+		      </div>
+ 			 <div class="form-group" style="text-align: center;">
+		        <label class="form-label">性别：男</label>
+		      </div>
+ 			 <div class="form-group" style="text-align: center;">
+		        <label class="form-label">出生日期：1999-01-01（18岁）</label>
+		      </div>
+ 		
+ 		
+ 		</div>
+ 		<div class="panel panel-default" style="float: right; width: 65%; height: 500px;overflow: scroll;">
+ 			<div style="text-align: center;">
+ 				<a >+安排课程</a>
+ 			</div>
+ 			<div style="background: #becad4;text-align: center">
+ 			<a>已购课程</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a> 练习详情</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <a>作业完成情况</a>
+ 			</div>
+ 		
+ 			 <div class="panel panel-default" >
+ 			 	<div class="panel-heading">正式课 课程名称</div>
+ 			 	<div>
+ 			 		&nbsp;&nbsp;&nbsp;陪练课 课节：30节   
+ 			 		<br>&nbsp;&nbsp;&nbsp;购课时间：2017-7-19 18:30:16 时长：25分钟 购课价格：25分钟
+ 			 		 <table class="table table-bordered">
+ 			 		 <tr>
+ 			 		 	<th>总课节</th>
+ 			 		 	<th>已完成</th>
+ 			 		 	<th>迟到</th>
+ 			 		 	<th>缺席</th>
+ 			 		 	<th>未完成</th>
+ 			 		 	<th>已预约</th>
+ 			 		 	<th>未预约</th>
+ 			 		 	</tr>
+ 			 		 	<tr>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 	</tr>
+ 			 		 </table>
+ 			 		 	
+ 			 	</div>
+ 			 	<div style="text-align: center;">
+ 			 		<button  type="button" class="btn btn-primary">预约课程</button>
+ 			 	</div>
+ 			 </div>
+ 			 
+ 			 
+ 			  <div class="panel panel-default" >
+ 			 	<div class="panel-heading">正式课 课程名称</div>
+ 			 	<div>
+ 			 		&nbsp;&nbsp;&nbsp;陪练课 课节：30节   
+ 			 		<br>&nbsp;&nbsp;&nbsp;购课时间：2017-7-19 18:30:16 时长：25分钟 购课价格：25分钟
+ 			 		 <table class="table table-bordered">
+ 			 		   <tr>
+ 			 		 	<th>总课节</th>
+ 			 		 	<th>已完成</th>
+ 			 		 	<th>迟到</th>
+ 			 		 	<th>缺席</th>
+ 			 		 	<th>未完成</th>
+ 			 		 	<th>已预约</th>
+ 			 		 	<th>未预约</th>
+ 			 		 	</tr>
+ 			 		 	<tr>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 		<td>10</td>
+ 			 		 	</tr>
+ 			 		 </table>
+ 			 	</div>
+ 			 	<div style="text-align: center;">
+ 			 		<button  type="button" class="btn btn-primary">预约课程</button>
+ 			 	</div>
+ 			 </div>
+ 			 
+ 			
+ 		
+ 		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// 面包屑
+		$('#breadcrumbs').html('学生/学生');
+		initBootstrapTable();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/student/generalInfo/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/student/generalInfo/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 10,
+			pageList: [10,20,50],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					userInfo: $("#user_info").val(),
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "编号",
+					field: "",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "姓名",
+					field: "real_name",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "性别",
+					field: "sex",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "琴龄",
+					field: "play_years",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "级别",
+					field: "level",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "联系方式",
+					field: "account",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "注册时间",
+					field: "regist_date",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "来源",
+					field: "",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						sHtml ='<div class="btn-group">';
+							sHtml +=' <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+							sHtml +=' 操作 <span class="caret"></span>';
+							sHtml +='  </button>';
+							sHtml +='  <ul class="dropdown-menu">';
+							sHtml +='  <li><a href="#">选择1</a></li>';
+							sHtml +='  <li><a href="#" onclick="showPushStatus(\''+row.online_lesson_details_id+'\','+row.show_status+')">订单</a></li>';
+							sHtml +=' </ul>';
+							sHtml +=' </div>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	
+	/*<![CDATA[*/
+
+		function initEvent() {
+		
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+		
+		
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

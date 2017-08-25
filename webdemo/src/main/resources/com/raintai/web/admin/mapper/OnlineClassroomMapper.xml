@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raintai.web.admin.mapper.OnlineClassroomMapper">
+
+  <select id="getLecturerTimePlanData" resultType="java.util.Map">
+   select l.id,s.real_name||'('||s.account||')' as user_name,l.day ,l.start_time ,l.end_time  
+   from lecturer_time_plan l inner join student s on l.user_id=s.id 
+   <![CDATA[and day>=#{beginDate} and day<=#{endDate}  ]]>
+   where  1=1  
+     <if test="userInfo != null and userInfo != ''">  
+   		and (s.real_name like #{userInfo}  or s.account like #{userInfo})
+	 </if>
+	  and l.user_id  in (select o.user_id from online_teaching_user o where o.teacher_type not like '%test%') 
+   order by l.day asc,l.user_id asc
+  </select>
+  
+  <select id="getLessonListData" resultType="java.util.Map">
+  	select ( case when ol.name is not null then ol.name when ut.lesson_type='1' then '试听课' else '-' end ) as lesson_name
+	,( case when ol.type_name is not null then ol.type_name when ut.lesson_type='1' then '试听课' else '-' end ) as lesson_type_name
+	,ut.room_num
+	,s1.real_name as lecturer_name
+	,s2.real_name as student_name
+	, to_char(ut.start_date,'yyyy-mm-dd hh24:mi') as start_date
+	,to_char(ut.end_date,'yyyy-mm-dd hh24:mi') as end_date
+	,ut.chose_song_infos
+	, extract(epoch FROM (ut.end_date - ut.start_date))/60 as lesson_min
+	
+	,(case when ut.start_date>now() then '等待上课' else '-' end ) as lesson_status
+	from user_teaching ut inner join student s1 on ut.user_from_id=s1.id
+	inner join student s2 on ut.user_to_id=s2.id
+	left join online_lesson_general ol on ol.id=ut.online_lesson_general_id
+	 where 1=1 and  ut.user_from_id in (
+		select t.user_id from online_teaching_user t where t.teacher_type in ('1','peilian')
+	)  and ut.show_status='1' 
+	<![CDATA[and to_char(ut.start_date,'yyyy-mm-dd')>=#{startDay} and to_char(ut.start_date,'yyyy-mm-dd')<=#{endDay}]]>
+	
+	 <if test="userInfo != null and userInfo != ''">  
+   		and (s1.real_name like #{userInfo}  or s1.account like #{userInfo}  or s2.real_name like #{userInfo}  or s2.account like #{userInfo})
+	 </if>
+	order by ut.start_date asc
+  </select>
+  
+  <select id="getOnlineLessonGeneralData" resultType="java.util.Map">
+	select o1.id as online_lesson_details_id,o1.lesson_no,o1.name as lesson_name
+	,olt.name type_name,olm.name mode_name,o1.lesson_min,o1.money,o1.lesson_num,o1.once_mondey
+	,o1.show_status from online_lesson_general  o
+	left join online_lesson_details o1 on o.id=o1.online_lesson_general_id
+	left join online_lesson_type olt on olt.id=o1.lesson_type_id
+	left join online_lesson_mode olm on olm.id=o1.lesson_mode_id
+	order by o1.id desc
+  </select>
+  
+  <select id="getOnlineLessonOrderData" resultType="java.util.Map">
+  
+	  select ol.online_lesson_general_name,ol.once_min,s.real_name,s.account
+	,ol.money,ol.surplus_lesson_num,ol.lesson_num,ol.real_price 
+	,to_char(ol.modify_date,'yyyy-mm-dd hh24:mi:ss') as buy_date
+	from online_lesson_buy_general ol
+	inner join student s on ol.user_id=s.id
+	where 1=1 
+	 <if test="userInfo != null and userInfo != ''">  
+   		and (s.real_name like #{userInfo}  or s.account like #{userInfo} )
+	 </if>
+	
+	order by ol.modify_date desc
+  </select>
+  
+	
+</mapper>

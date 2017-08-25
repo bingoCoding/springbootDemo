@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+  
+  <!-- 通用按天输出日志，保留30天 -->
+  <appender name="COMMON-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+	<layout class="ch.qos.logback.classic.PatternLayout">
+	  <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+	</layout>
+  </appender>
+  
+  <!-- SQL日志天输出日志，保留30天 -->
+  <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/sql/sql_trace.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+	<layout class="ch.qos.logback.classic.PatternLayout">
+	  <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+	</layout>
+  </appender>
+  
+   <!-- 异常日志天输出日志，保留30天 -->
+  <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/err/err_trace.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+	<layout class="ch.qos.logback.classic.PatternLayout">
+	  <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+	</layout>
+  </appender>
+  
+  <!-- SQL跟踪日志 -->
+  <logger name="com.raintai.web.partner.mapper" level="DEBUG" additivity="true">
+    <appender-ref ref="SQL" />
+  </logger>
+  
+  <!-- 异常跟踪日志 -->
+  <logger name="com.raintai.common.web.handler" level="INFO" additivity="true">
+    <appender-ref ref="ERROR" />
+  </logger>
+  
+  <springProfile name="dev,unittest,test">
+    <root level="INFO">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="COMMON-FILE" />
+    </root>
+  </springProfile>
+  
+  <springProfile name="prod">
+    <root level="INFO">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="COMMON-FILE" />
+    </root>
+  </springProfile>
+    
+</configuration>

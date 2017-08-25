@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+	 <!-- start myModal -->
+	<div class="modal fade" id="import_create_lesson_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                新建课程
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				   
+					<form class="form-group form-group-sm" id='saveForm'>
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程编号</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="lessonNo" name="lessonNo">
+					    </div>
+					</div> 
+					
+					 <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程类型</label>
+					    <div class="col-sm-2">
+					      <select class="form-control input-lg" id="lessonTypeId" name="lessonTypeId">
+					      	<option value="">请选择</option>
+					      	<option value="1">试听</option>
+					      	<option value="2">正课</option>
+					      	
+					      </select>
+					    </div>
+					    
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程模式</label>
+					    <div class="col-sm-2">
+					      <select class="form-control input-lg" id="lessonModeId" name="lessonModeId">
+					      	<option value="">请选择</option>
+					      	<option value="1">陪练</option>
+					      	<option value="2">授课</option>
+					      </select>
+					    </div>
+					  </div>
+					
+					  
+					   <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程名称</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="lessonName" name="lessonName" data-bv-notempty data-bv-notempty-message="验证码不能为空">
+					    </div>
+					  </div>
+					  
+					   <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程时长</label>
+					    <div class="col-sm-2">
+					      <input type="number" class="form-control" id="lessonName" name="lessonMin">
+					    </div>
+					    
+					      <label for="formGroupInputSmall" class="col-sm-2 control-label">课节</label>
+					    <div class="col-sm-2">
+					      <input type="number" class="form-control" id="lessonNum" name="lessonNum" >
+					    </div>
+					  </div>
+					 
+					  
+					 <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">授课模式</label>
+					    <div class="col-sm-5">
+					        <select class="form-control input-lg" id="teachingMode" name="teachingMode">
+					      	<option value=''>请选择</option>
+					      	<option value='1v1'>1v1</option>
+					      </select>
+					    </div>
+					  </div>
+					  
+					  <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">适合水平</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="targetPerson" name="targetPerson">
+					    </div>
+					  </div> 
+					  
+					  <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">配套设备</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id='equipment' name='equipment'>
+					    </div>
+					  </div>
+					  
+					   <div class="form-group" >
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">价格</label>
+					    <div class="col-sm-2">
+					      <input type="number" class="form-control"  id="money" name="money">
+					    </div>
+					    
+					     <label for="formGroupInputSmall" class="col-sm-2 control-label">单价</label>
+					    <div class="col-sm-2">
+					      <input type="number" class="form-control"  id="onceMondey" name="onceMondey">
+					    </div>
+					  </div>
+					  
+					   <div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">课程描述</label>
+					    <div class="col-sm-5">
+					      <textarea class="form-control" rows="3" id="description" name="description"></textarea> 
+					    </div>
+					  </div>
+					</form>
+					 
+				</div>
+				<div class="modal-footer">
+					<button id="saveAppService" type="button" class="btn btn-info" onclick="createNewLesson()">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+		 <!-- start myModal -->
+	<div class="modal fade" id="push_status_lesson_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                课程发布状态
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+					<input type="hidden" id="detailsId" value="">		
+					 <div class="form-group">
+											    
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">发布状态</label>
+					    <div class="col-sm-2">
+					      <select class="form-control input-lg" id="pushStatus" >
+					      	<option value="">请选择</option>
+					      	<option value="1">发布</option>
+					      	<option value="2">下架</option>
+					      </select>
+					    </div>
+					  </div>		
+					 
+				</div>
+				<div class="modal-footer">
+					<button  type="button" class="btn btn-info" onclick="updatePushStatus()">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+    <div class="mainpanel">
+  <form class="form-inline" role="form">
+
+			<div class="form-group"  style="i">
+			    <input type="text" class="form-control" placeholder="用户名称或账号" id="user_info" />
+				<div class="input-group">
+	            	<label class="input-group-addon btn" id="searchButton"><span class="glyphicon glyphicon-search"></span></label>
+	            </div>
+	           
+            </div>
+            <div style="float:right">
+            <input class="btn btn-default" type="button" value="新建课程" onclick="newLesson()">
+            </div> 
+            
+   		</form>
+    
+		<div class="col-sm-12 input-group">
+			<div style="margin-top: 10px;">
+				<div class="table-responsive">
+					<table id="dataTable"></table>
+				</div>
+			</div>
+		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+	
+		// 面包屑
+		$('#breadcrumbs').html('课程管理/课程管理');
+		initBootstrapTable();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/onlineClassroom/onlineLessonGeneral/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/onlineClassroom/onlineLessonGeneral/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 10,
+			pageList: [10,20,50],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					userInfo: $("#user_info").val()
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "课程编号",
+					field: "lesson_no",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "课程名称",
+					field: "lesson_name",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "课程类型",
+					field: "type_name",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "课节(节)",
+					field: "lesson_num",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "时长(分)",
+					field: "lesson_min",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "课程模式",
+					field: "mode_name",
+					align: "left",
+					valign: "middle"
+				},{
+					title: "总价/单价(元)",
+					field: "",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+							return row.money+'/'+row.once_mondey;
+					}
+				},{
+					title: "状态",
+					field: "show_status",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+							if(row.show_status=='1'){
+								return '发布';
+							}else if(row.show_status=='2'){
+								return '下架';
+							}else {
+								return '删除';
+							}
+					}
+				},
+				{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						sHtml ='<div class="btn-group">';
+							sHtml +=' <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+							sHtml +=' 操作 <span class="caret"></span>';
+							sHtml +='  </button>';
+							sHtml +='  <ul class="dropdown-menu">';
+							sHtml +='  <li><a href="#">选择1</a></li>';
+							sHtml +='  <li><a href="#" onclick="showPushStatus(\''+row.online_lesson_details_id+'\','+row.show_status+')">发布状态</a></li>';
+							sHtml +=' </ul>';
+							sHtml +=' </div>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	//新建课程
+	function newLesson(){
+		//import_create_lesson_div
+		$('#import_create_lesson_div').modal('show');
+	}
+	
+	//显示课程发布状态
+	function showPushStatus(id,show_status){
+		$('#detailsId').val(id);
+		set_select_checked('pushStatus',show_status)
+		$('#push_status_lesson_div').modal('show');
+	}
+	
+	
+	//更新状态
+	function updatePushStatus(){
+		var id=$('#detailsId').val();
+		var val=$("#pushStatus").find("option:selected").val();
+		
+	     $.ajax({  
+	         type:'post',      
+	         url:'/onlineClassroom/onlineLessonGeneral/updatePushStatus?detailsId='+id+'&pushStatus='+val,  
+	         cache:false,  
+	         dataType:'json',  
+	         success:function(data){  
+	        	 refreshTable();
+	        	
+	         }  
+	     });  
+
+		
+	}
+
+	
+	/** 
+	 * 设置select控件选中 
+	 * @param selectId select的id值 
+	 * @param checkValue 选中option的值 
+	 * @author 标哥 
+	*/  
+	function set_select_checked(selectId, checkValue){  
+	    var select = document.getElementById(selectId);  
+
+	    for (var i = 0; i < select.options.length; i++){  
+	        if (select.options[i].value == checkValue){  
+	            select.options[i].selected = true;  
+	            break;  
+	        }  
+	    }  
+	}
+	
+	
+	//添加课程
+	function createNewLesson(){
+		//校验
+	/* 		$('#lessonName').val('');
+		$('#lessonMin').val('');
+		$('#lessonTypeId').val('');
+		$('#lessonModeId').val('');
+		$('#lessonNum').val('');
+		$('#money').val('');
+		$('#onceMondey').val('');
+		$('#lessonNo').val('');
+		$('#targetPerson').val('');
+		$('#description').val('');
+		$('#teachingMode').val('');
+		$('#equipment').val(''); */
+		
+		if ($('#lessonNo').val() == '') {
+            alert('请输入课程编号！');
+            return;
+        }
+        if ($('#lessonName').val() == '') {
+            alert('请输入课程名！');
+            return;
+        }
+		if ($('#lessonMin').val() == '') {
+            alert('请输入课程时长 ！');
+            return;
+        }
+		if ($('#lessonTypeId').val() == '') {
+            alert('请输入课程类型！');
+            return;
+        }
+		if ($('#lessonModeId').val() == '') {
+            alert('请输入课程模式！');
+            return;
+        }
+		if ($('#lessonNum').val() == '') {
+            alert('请输入课节！');
+            return;
+        }
+		if ($('#money').val() == '') {
+            alert('请输入课程价格！');
+            return;
+        }
+		if ($('#onceMondey').val() == '') {
+            alert('请输入单节价格！');
+            return;
+        }
+		if ($('#targetPerson').val() == '') {
+            alert('请输入适合水平！');
+            return;
+        }
+		if ($('#description').val() == '') {
+            alert('请输入课程描述！');
+            return;
+        }
+		if ($('#teachingMode').val() == '') {
+            alert('请输入授课模式！');
+            return;
+        }
+		    
+		     $.ajax({  
+		         type:'post',      
+		         url:'/onlineClassroom/onlineLessonGeneral/save',  
+		         data:$("#saveForm").serialize(),  
+		         cache:false,  
+		         dataType:'json',  
+		         success:function(data){  
+		        	 
+		        	 if (data.code == 0) {
+		            		refreshTable();
+		            		clearForm();
+		            	} else {
+		            		alert(data.info);
+		            	}
+		        	 $('#import_create_lesson_div').modal('hide');
+		        	
+		         }  
+		     }); 
+		
+		//saveForm
+		
+	}
+	
+	
+	function clearForm() {
+		$('#lessonName').val('');
+		$('#lessonMin').val('');
+		$('#lessonTypeId').val('');
+		$('#lessonModeId').val('');
+		$('#lessonNum').val('');
+		$('#money').val('');
+		$('#onceMondey').val('');
+		$('#lessonNo').val('');
+		$('#targetPerson').val('');
+		$('#description').val('');
+		$('#teachingMode').val('');
+		$('#equipment').val('');
+		
+		
+	}
+
+	
+	/*<![CDATA[*/
+	function initEvent() {
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+</head>
+<body>
+
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!--  -->
+<section>
+	<div class="mainwrapper">
+		<div th:replace="common/left_menu :: leftMenu"></div>
+        <div class="mainpanel">
+        	首页，内容待定
+        </div><!-- mainpanel -->
+	</div>
+</section>
+</body>
+<script th:inline="javascript">
+</script>
+</html>

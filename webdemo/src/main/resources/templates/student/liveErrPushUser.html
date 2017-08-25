@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+	
+		 <!-- start myModal -->
+	<div class="modal fade" id="create_push_user_div" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>
+					  <h4 class="modal-title" >
+			                添加推送人
+			          </h4>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				   <form class="form-group form-group-sm" id='saveForm'>
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">学生账号</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="studentAccount" name="studentAccount">
+					    </div>
+					</div> 
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">推送人电话</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="pushUserPhone" name="pushUserPhone">
+					    </div>
+					</div> 
+					
+					<div class="form-group">
+					    <label for="formGroupInputSmall" class="col-sm-2 control-label">推送人名称</label>
+					    <div class="col-sm-5">
+					      <input type="text" class="form-control" id="pushUserName" name="pushUserName">
+					    </div>
+					</div> 
+					</form>
+					
+										 
+				</div>
+				<div class="modal-footer">
+					<button id="saveAppService" type="button" class="btn btn-info" onclick="create()">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+	
+	
+    <div class="mainpanel">
+  <form class="form-inline" role="form">
+
+			<div class="form-group"  style="i">
+			    <input type="text" class="form-control" placeholder="用户名称或账号" id="user_info" />
+				<div class="input-group">
+	            	<label class="input-group-addon btn" id="searchButton"><span class="glyphicon glyphicon-search"></span></label>
+	            </div>
+	       
+            </div>
+            
+             <div style="float:right">
+            	<input class="btn btn-default" type="button" value="添加推送人" onclick="showCreatePushUser()">
+            </div>
+   		</form>
+    
+		<div class="col-sm-12 input-group">
+			<div style="margin-top: 10px;">
+				<div class="table-responsive">
+					<table id="dataTable"></table>
+				</div>
+			</div>
+		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+	
+		// 面包屑
+		$('#breadcrumbs').html('学生/错误推送');
+		initBootstrapTable();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/student/liveErrPushUser/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/student/liveErrPushUser/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 10,
+			pageList: [10,20,50],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					userInfo: $("#user_info").val()
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "学生",
+					field: "real_name",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						return row.real_name+'('+row.account+')';
+					}
+				},{
+					title: "推送人",
+					field: "real_name",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						return row.push_user_name+'('+row.push_account+')';
+					}
+				},{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						sHtml ='<div class="btn-group">';
+							sHtml +=' <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+							sHtml +=' 操作 <span class="caret"></span>';
+							sHtml +='  </button>';
+							sHtml +='  <ul class="dropdown-menu">';
+							sHtml +='  <li><a href="#">选择1</a></li>';
+							sHtml +='  <li><a href="#">删除</a></li>';
+							sHtml +=' </ul>';
+							sHtml +=' </div>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	
+	function showCreatePushUser(){
+		clearForm();
+		$('#create_push_user_div').modal('show');
+		
+	}
+	
+	function clearForm(){
+		$('#studentAccount').val('');
+		$('#pushUserPhone').val('');
+		$('#pushUserName').val('');
+	}
+	
+	var reg = /^1[358][0-9]{9}$/;
+	//创建订单
+	function create(){
+		//获取手机号
+		if ($('#studentAccount').val() == '') {
+            alert('请输入学生手机号！');
+            return;
+        }
+		if ($('#pushUserPhone').val()==null||$('#pushUserPhone').val() == ''
+				||!reg.test($('#pushUserPhone').val())) {
+            alert('请输入推送人手机号不正确！');
+            return;
+        }
+		if ($('#pushUserName').val() == '') {
+            alert('请输入推送人姓名！');
+            return;
+        }
+				
+	 	$.ajax({  
+	         type:'post',      
+	         url:'/student/liveErrPushUser/save',  
+	         cache:false,  
+	         data:$("#saveForm").serialize(),  
+	         dataType:'json',  
+	         success:function(data){  
+					  if(data.data.errMsg==null){
+						  refreshTable();
+						  $('#create_push_user_div').modal('hide');
+						  alert('保存成功');
+						  
+					  }  else{
+						  alert(data.data.errMsg);
+					  }    	 
+	         }  
+	     });  
+	}
+	
+	/*<![CDATA[*/
+	function initEvent() {
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<script src="//api.html5media.info/1.1.8/html5media.min.js"></script> 
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	<a href=""></a>
+	<!-- start myModal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clearVideo()">&times;</button>
+				</div>
+				<div class="modal-body form-horizontal" id="myModalBody">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearVideo()">关闭</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- end myModal -->
+	
+	
+ 	<div class="mainpanel">
+ 	<div class="panel panel-default">
+ 	   <div class="panel-heading">课程</div>
+    <table class="table ">
+       
+        <tr>
+        <td>课程名称:</td>
+        <td>课程时长:<span id="lesson_min" style="color: blue;"></span></td>
+        <td>课程状态:<span id="lesson_status" style="color: blue;"></span></td>
+        </tr>
+        <tr>
+        <td>课程教材:</td>
+        <td>上课时间:<span id='lesson_start_date' style="color: blue;"></span></td>
+        <td>授课老师:<span id='lecturer' style="color: blue;"></span></td>
+        </tr>
+        <tr>
+        <td>学生设备:<span id='student_sys_type1' style="color: blue;"></span></td>
+        <td>系统版本:<span id='student_os_info1' style="color: blue;"></span></td>
+        <td>软件版本:<span id='student_app_version1' style="color: blue;"></span></td>
+        </tr>
+        <tr>
+        <td>学生评价:</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr>
+        <td>巡课:</td>
+		<td></td>
+		<td></td>
+        </tr>
+        <tr>
+        <td>课程回放:<span id='lesson_video'></span></td>
+		<td></td>
+		<td></td>
+        </tr>
+        <tr>
+        <td>巡课反馈:<span id='feedback_list'></span></td>
+		<td></td>
+		<td></td>
+        </tr>
+        
+    </table>
+    </div>
+    
+    
+    <div class="panel panel-default">
+ 	   <div class="panel-heading"></div>
+    <table class="table ">
+      	<th>学生(<span id='student_name' style="color: blue;"></span>)</th>
+      	<th>老师(<span id='lecturer_name' style="color: blue;"></span>)</th>
+       	<tr>
+       		<td>首次进入教室时间:<span id='student_start_op_time' style="color: blue;"></span></td>
+       		<td>首次进入教室时间:<span id='lecturer_start_op_time' style="color: blue;"></span></td>
+       	</tr>
+       	<tr>
+       		<td>最后退出教室时间:<span id='student_end_op_time' style="color: blue;"></span></td>
+       		<td>最后退出教室时间:<span id='lecturer_end_op_time' style="color: blue;"></span></td>
+       	</tr>
+       	<tr>
+       		<td>网速监控:<span id='student_net' style="color: blue;"></span></td>
+       		<td>网速监控:<span id='lecturer_net' style="color: blue;"></span></td>
+       	</tr>
+       	<tr>
+       		<td>平均网速:<span id='student_avg_net' style="color: blue;"></span></td>
+       		<td>平均网速:<span id='lecturer_avg_net' style="color: blue;"></span></td>
+       	</tr>
+        
+    </table>
+    </div>
+    
+    
+    
+   <div class="panel panel-default" id='action_list'>
+ 	 <!--   <div class="panel-heading">进出教室记录</div>
+    <table class="table ">
+      <tr>
+      	<td>进入时间：<span id='student_start_op_time1' style="color: blue;"></span></td>
+      	<td>角色：学生</td>
+      	<td>软件版本：<span id='student_app_version' style="color: blue;"></span></td>
+      	<td>平台设备：<span id='student_sys_type' style="color: blue;"></span></td>
+      </tr>
+      
+      <tr>
+      	<td>系统版本：--</td>
+      	<td>辅助硬件设备：<span id='student_camera' style="color: blue;"></span></td>
+      	<td>退出时间:<span id='student_end_op_time1' style="color: blue;"></span></td>
+      	<td></td>
+      </tr>
+      
+      
+      <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>  
+      <tr>
+      	<td>进入时间：<span id='lecturer_start_op_time1' style="color: blue;"></span></td>
+      	<td>角色：老师</td>
+      	<td>软件版本：<span id='lecturer_app_version' style="color: blue;"></span></td>
+      	<td>平台设备：<span id='lecturer_sys_type' style="color: blue;"></span></td>
+      </tr>
+
+      
+      <tr>
+      	<td>系统版本：--</td>
+      	<td>辅助硬件设备：<span id='lecturer_camera' style="color: blue;"></span></td>
+      	<td>退出时间:<span id='lecturer_end_op_time1' style="color: blue;"></span></td>
+      	<td></td>
+      </tr>
+        
+    </table>
+    </div> -->
+    
+    
+ 	</div>
+ 	
+ 
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+
+ 
+	$(document).ready(function() {
+		// 面包屑
+		$('#breadcrumbs').html('监控/课程详情');
+		
+		initData();
+		self.setInterval(initData,1000*30);
+	});
+   
+	   
+	   function initData() {
+			$.ajax({
+	            type: 'get',
+	            url: '/monitor/onlineClassroom/roomInfo/data'+window.location.search,
+	            dataType: 'json',
+	            success: function (data) {
+	            	var result=data.data;
+	            	//
+	            	$("#student_name").html(result.student_real_name);
+	            	$("#lecturer_name").html(result.lecturer);
+	            	
+	            	//学生手机信息 student_os_info1
+	            	$("#student_sys_type1").html(checkVal(result.student_os_type));
+	            	$("#student_os_info1").html(checkVal(result.student_os_type)+"("+checkVal(result.student_os_version)+")");
+	            	$("#student_app_version1").html(checkVal(result.student_app_version));
+	            	
+	            	
+	            	$("#lesson_min").html(result.lesson_min+'分钟');
+	            	$("#lesson_start_date").html(result.lesson_start_date);
+	            	$("#lecturer").html(result.lecturer);
+	            	
+	            	$("#student_start_op_time").html(result.student_start_op_time);
+	            	 $("#student_end_op_time").html(result.student_end_op_time);
+	            	 $("#lecturer_start_op_time").html(result.lecturer_start_op_time);
+	            	$("#lecturer_end_op_time").html(result.lecturer_end_op_time);
+	            	
+	            	
+	            	$("#student_start_op_time1").html(result.student_start_op_time);
+	            	 $("#student_end_op_time1").html(result.student_end_op_time);
+	            	 $("#lecturer_start_op_time1").html(result.lecturer_start_op_time);
+	            	$("#lecturer_end_op_time1").html(result.lecturer_end_op_time);
+	            	
+	            	
+	            	
+	            	//巡课 feedback_list
+	            	if(result.feedbackList!=null&&result.feedbackList.length>0){
+	            		var feedback='';
+	            		for(var i=0;i<result.feedbackList.length;i++){
+	            			feedback+=' <br>内容:'+result.feedbackList[i].content+' &nbsp;&nbsp;&nbsp; 点评时间:'+result.feedbackList[i].content_date +' '
+		            	}
+	            		$("#feedback_list").html(feedback);
+	            	}
+	            	
+	            	
+	            	
+	            	
+	            	 $("#lecturer_app_version").html(result.lecturer_app_version);
+		             $("#lecturer_sys_type").html(result.lecturer_sys_type);
+	            	 $("#student_app_version").html(result.student_app_version);
+		             $("#student_sys_type").html(result.student_sys_type);
+		             
+		             $("#student_app_version1").html(result.student_app_version);
+		             $("#student_sys_type1").html(result.student_sys_type);
+		             
+		             if(result.student_camera_video_url!=null){
+		            	 $("#student_camera").html('大眼睛');
+		             }else{
+		            	 $("#student_camera").html('--');
+		             }
+		             
+		             if(result.teacher_camera_video_url!=null){
+		            	 $("#lecturer_camera").html('大眼睛');
+		             }else{
+		            	 $("#lecturer_camera").html('--');
+		             }
+		             
+		             //初始化课程 lesson_video
+					var videostr='';
+
+					if(result.video_url!=null){
+		            	videostr+='<a  href="javascript:showVideo(\''+result.video_url+'\')"> 回看 </a>';
+		            } else{
+		            	videostr+=' 回看 ';
+		            } 
+		            $("#lesson_video").html(videostr);
+		            
+		            //上课状态
+		            if(result.lesson_status==1){
+		            	$("#lesson_status").html('未开课');
+		            }else if(result.lesson_status==2){
+		            	$("#lesson_status").html('上课中');
+		            }else if(result.lesson_status==3){
+		            	$("#lesson_status").html('时间已过 已上课');
+		            }else if(result.lesson_status==4){
+		            	$("#lesson_status").html('时间已过 未上课');
+		            }
+		            
+		            
+		            $("#lecturer_avg_net").html("上行质量:"+(result.lecturer_avg_tx_quality<=2?'好':'坏')+" 下行质量:"+(result.lecturer_avg_rx_quality<=2?'好':'坏'));
+		            $("#student_avg_net").html("上行质量:"+(result.student_avg_tx_quality<=2?'好':'坏')+" 下行质量:"+(result.student_avg_rx_quality<=2?'好':'坏'));
+							            
+		            $("#lecturer_net").html("上行质量:"+(result.lecturer_tx_quality<=2?'好':'坏')+" 下行质量:"+(result.lecturer_rx_quality<=2?'好':'坏'));
+		            $("#student_net").html("上行质量:"+(result.student_tx_quality<=2?'好':'坏')+" 下行质量:"+(result.student_rx_quality<=2?'好':'坏'));
+					
+		            
+		            document.getElementById('action_list').innerHTML='';
+		            var action_list_val='';
+		            action_list_val+='<div class="panel-heading">进出教室记录</div>';
+		            action_list_val+=' <table class="table ">';
+		            for(var i=0;i<result.actionList.length;i++){
+		            	 var data1=result.actionList[i];
+		            	 action_list_val+=' <tr>';
+		            	 //action_list_val+=' <td>'+(data1.action_name=='in'?'进入':'退出')+'时间：<span style="color: blue;">'+data1.op_time+'</span></td>';
+		            	 action_list_val+=' <td>'+(data1.action_name=='in'?'进入':'退出')+'时间：<span style="color: '+(data1.action_name=='in'?'green':'red')+';">'+data1.op_time+'</span></td>';
+		            	 
+		            	 
+		            	 
+		            	 action_list_val+=' <td>角色：'+(data1.role_name=='s'?'<img src="/images/student1.png" width="30px" height="30px">学生'+'('+data1.real_name+')':'<img src="/images/teacher1.png" width="30px" height="30px">老师('+data1.real_name+')')+'</td>';
+		            	 action_list_val+=' <td>软件版本：<span  style="color: blue;">'+(data1.app_version!=null?data1.app_version:'')+'</span></td>';
+		            	 action_list_val+=' <td>平台设备：<span  style="color: blue;">'+(data1.os_type!=null?data1.os_type:'')+ (data1.os_version==null?'':' ('+data1.os_version+')')+'</span></td>';
+		            	 action_list_val+=' </tr>';
+		            	 action_list_val+='  <tr>';
+		            	 action_list_val+='  <td>系统版本：--</td>';
+		            	 action_list_val+=' <td>辅助硬件设备：<span  style="color: blue;">'+(data1.camera_mac !=null?'大眼睛':'--')+'</span></td>';
+		            	 action_list_val+=' <td></td>';
+		            	 action_list_val+=' <td></td>';
+		            	 action_list_val+='  </tr>';
+		            	 action_list_val+='<tr><td></td><td></td><td></td><td></td></tr>'
+		            	
+		            }
+		            action_list_val+=' <table>';
+		            document.getElementById('action_list').innerHTML=action_list_val;
+		            
+	            }
+	        });
+		}
+	   
+	   function checkVal(val){
+		   if(val==null||val==''){
+			   return '';
+		   }else{
+			   return val
+		   }
+	   }
+	   
+	   
+	   //视频播放
+	   function showVideo(url){
+		   
+		 $('#myModalBody').html('');
+		 var str=
+			' <video width="320" height="240" controls>' 
+		    +' <source src="'+url+'" type="video/ogg" id="video1"></source >' 
+		    +' <source src="'+url+'" type="video/mp4" id="video2"></source >' 
+		    +' <embed src="'+url+'" type="application/x-shockwave-flash"  ' 
+		    +' width="1024" height="798" allowscriptaccess="always" allowfullscreen="true" id="video3"> </embed> </video>   ' 
+		
+		    
+		    +' <div class="form-group">'
+		    +' <label for="name">巡课点评</label>'
+		    +' <form role="form"> <textarea class="form-control" rows="3" style="width: 60%;" id="dianping_content"></textarea></form>'
+		    +' <button type="button" class="btn btn-primary btn-sm" onclick="dianping()">点评</button>'
+		    +' </div>'
+			
+		 $('#myModalBody').html(str);
+		 
+		 $('#myModal').modal('show');
+	   }
+	   
+	   function clearVideo(){
+		   $('#myModalBody').html('');
+	   }
+	 
+	   function dianping(){
+		    var roomNum=getQueryString("roomNum");
+		    var dianping_content=document.getElementById("dianping_content").value;
+		    if(dianping_content==null||dianping_content==''){
+		    	alert('请填写巡课内容');
+		    	return;
+		    }
+		    if(roomNum==null||roomNum==''){
+		    	alert('房间号为空');
+		    	return;
+		    }
+		    
+		  $.ajax({
+	            type: 'post',
+	            url: '/monitor/onlineClassroom/roomInfo/addFeedback',
+	            dataType: 'json',
+	            data:{roomNum:roomNum,content:dianping_content},
+	            success: function (data) {
+							alert('填写成功');            	
+	            }
+		   }); 
+	   }
+	   
+	   
+	    function getQueryString(name) {
+	        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	        var r = window.location.search.substr(1).match(reg);
+	        if (r != null) return unescape(r[2]); return null;
+	    }
+</script>
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raintai.web.partner.mapper.EduMapper">
+
+  <!-- 获取待审核的老师列表 -->
+  <select id="getNeedVerifyTeacher" resultType="java.util.Map">
+	select
+		t.id as teacher_id,
+		t.real_name as teacher_name,
+		t.sex,
+		t.head_url,
+		morg.name as org_name
+	from teacher_org torg
+	left join teacher t on t.id = torg.teacher_id
+	left join music_org morg on morg.id = torg.music_org_id
+	where torg.music_org_id = #{orgId} and torg.check_status = 0 and torg.status = 1
+  </select>
+  
+  <!-- 机构审核老师 -->
+  <select id="verifyTeacher" resultType="java.lang.Integer">
+  	update teacher_org 
+  	   set check_status = 1
+  	   <!-- 不同意则自动挂到音乐笔记下 -->
+  	   <if test='checkStatus == "n"'>
+  	       , music_org_id = 1
+  	   </if>
+  	 where teacher_id = #{teacherId} and status = 1
+  </select>
+	
+</mapper>

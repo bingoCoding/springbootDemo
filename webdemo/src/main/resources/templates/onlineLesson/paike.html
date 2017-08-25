@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="common/head"/>
+	<style>
+	    .popover {
+	        max-width: 900px;
+	    }
+	</style>
+</head>
+<body>
+<!-- top header -->
+<header th:replace="common/top_header :: header"></header>
+<!-- content -->
+<div class="mainwrapper">
+	<div th:replace="common/left_menu :: leftMenu"></div>
+	
+    <div class="mainpanel">
+  <form class="form-inline" role="form">
+			<div class="form-group" >
+			    <input type="text" class="form-control" placeholder="用户名称或账号" id="user_info" />
+				<div class="input-group">
+	            	<label class="input-group-addon btn" id="searchButton"><span class="glyphicon glyphicon-search"></span></label>
+	            </div>
+            </div>
+   		</form>
+    
+		<div class="col-sm-12 input-group">
+			<div style="margin-top: 10px;">
+				<div class="table-responsive">
+					<table id="dataTable"></table>
+				</div>
+			</div>
+		</div>
+    </div><!-- mainpanel -->
+</div><!-- mainwrapper -->
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// 面包屑
+		$('#breadcrumbs').html('学生/学生');
+		initBootstrapTable();
+		initEvent();
+	});
+    
+	function refreshTable() {
+		$('#dataTable').bootstrapTable('refresh', {
+			url: "/student/generalInfo/data"
+		});
+	}
+	
+	function initBootstrapTable() {
+		
+		$('#dataTable').bootstrapTable({
+			method: 'get',
+			url: '/student/generalInfo/data',
+			striped: true,
+			cache: false,
+			pagination: true,
+			sidePagination: 'server',
+			pageSize: 10,
+			pageList: [10,20,50],
+			queryParamsType: '',
+			queryParams: function (params) {
+				return {
+					pageSize: params.pageSize,
+					pageNum: params.pageNumber,
+					userInfo: $("#user_info").val(),
+				}
+			},
+			responseHandler: function (data) {
+                if (data.code == 0) {
+                    return {
+                        "rows": data.data.list,
+                        "total": data.data.total
+                    }
+                } else {
+                    return {
+                        "rows": [],
+                        "total": 0
+                    }
+                }
+            },
+			columns: [
+				{
+					title: "编号",
+					field: "",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "姓名",
+					field: "real_name",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "性别",
+					field: "sex",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "琴龄",
+					field: "play_years",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "级别",
+					field: "level",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "联系方式",
+					field: "account",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "注册时间",
+					field: "regist_date",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "来源",
+					field: "",
+					align: "left",
+					valign: "middle"
+				},
+				{
+					title: "操作",
+					align: "left",
+					valign: "middle",
+					formatter: function (value, row, index) {
+						var sHtml = '';
+						//sHtml += '<button type="button" class="btn btn-info btn-sm" data-id="' + row.id + '" data-serverName="' + row.serverName + '" data-innerIp="' + row.innerIp + '" data-outterIp="' + row.outterIp + '" data-bussiness="' + row.bussiness + '" onclick="modifyAppServer(this);">修改</button>';
+						sHtml+='<select></select>';
+						return sHtml;
+					}
+					
+				}
+				
+			]
+		});
+	}
+	
+	
+	/*<![CDATA[*/
+
+		function initEvent() {
+		
+		$('#searchButton').bind('click', function() {
+			refreshTable();
+		});
+		
+		
+	}
+	
+	/*]]>*/
+	
+</script>
+</html>

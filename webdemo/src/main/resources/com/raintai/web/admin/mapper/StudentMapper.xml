@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raintai.web.admin.mapper.StudentMapper">
+
+  <select id="getGeneralInfoData" resultType="java.util.Map">
+  	 select s.id,s.account ,s.real_name,(case when s.sex=1 then '男' when s.sex=0 then '女' else '-' end) as sex
+	,s.play_years,s.level,to_char(s.regist_date,'yyyy-mm-dd hh:24:mi:ss') as regist_date
+	 from student s 
+	 where 1=1  and s.account not like 'guest_%'
+	  <if test="userInfo != null and userInfo != ''">  
+	 	and (s.real_name like #{userInfo}  or s.account like #{userInfo})
+	  </if>
+	  order by s.regist_date desc
+
+  </select>
+  
+  <select id="getliveErrPushUserData" resultType="java.util.Map">
+  	select 
+		s.real_name,s.account,l.push_account,l.push_user_name
+	 from live_err_push_user l left join  student s on l.user_id=s.id 
+	  where 1=1  
+	  <if test="userInfo != null and userInfo != ''">  
+	 	and (s.real_name like #{userInfo}  or s.account like #{userInfo} 
+	    or	l.push_account like #{userInfo}  or l.push_user_name like #{userInfo}
+	 	)
+	  </if>
+
+  </select>
+	
+</mapper>

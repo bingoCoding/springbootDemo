@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #F0F0F0;
+}
+
+body:after {
+	content: "";
+	vertical-align: middle;
+	display: inline-block;
+	width: 1px;
+	height: 100%
+}
+
+body:before {
+	height: 50%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #75BAE4;
+	content: "";
+	z-index: 0
+}
+
+.form-signin {
+  width: 500px;
+  max-width: 500px;
+  padding: 5px 15px 15px 15px;
+  box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.div-outer {
+  position: absolute;
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.div-middle {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.div-inner {
+  background: #fff;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+  max-width: 500px;
+}
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+h1 {
+  color: #7E7E7E;
+  font-size : 27px;
+  text-align: center;
+  letter-spacing: -.05em;
+  line-height: 10px;
+  display: inline-block;
+}
+
+.title {
+  height: 1px;
+  width: 170px;
+  display: inline-block;
+}
+
+.title-after {
+  background: rgb(126,126,126);
+  background: -moz-linear-gradient(left,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -webkit-linear-gradient(left,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -moz-linear-gradient(left,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -ms-linear-gradient(left,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: linear-gradient(left,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  right: 0px;
+}
+
+.title-before {
+  text-align: right;
+  background: rgb(126,126,126);
+  background: -moz-linear-gradient(right,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -webkit-linear-gradient(right,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -moz-linear-gradient(right,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: -ms-linear-gradient(right,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  background: linear-gradient(right,rgba(126,126,126,1) 0%,rgba(255,255,255,1) 100%);
+  left: 0px;
+}
