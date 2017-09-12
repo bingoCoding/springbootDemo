@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xml:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket 广播式</title>
+</head>
+<body onload="disconnect()">
+<noscript><h3 style="color: #ff0000;">浏览器不支持websocket</h3></noscript>
+<div>
+    <div>
+        <button id="btn1" onclick="connect()">连接</button>
+        <button id="btn2" onclick="disconnect()" disabled="disabled">断开连接</button>
+    </div>
+
+    <div id="conversationDiv">
+        <label>输入名字：</label><input id="name" type="text" />
+        <button id="sendName" onclick="sendName()">发送</button>
+        <p id="response"></p>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script type="text/javascript">
+    var stompClient = null;
+    function setConnected(connected) {
+        $("#btn1").attr("disabled",connected);
+        $("#btn2").attr("disabled",!connected);
+        document.getElementById("conversationDiv").style.visibility=connected?'visible':'hidden';
+        $("#response").html();
+    }
+    function connect() {
+        var socket = new SockJs('/endpointURL');
+        stompClient = Stomp.over(socket);
+
+        /*开启连接WebSocket服务器*/
+        stompClient.connect({},function (frame) {
+            setConnected(true);
+            console.log('connected:'+frame);
+            /*订阅消息*/
+            stompClient.subscribe('/sendto',function (data) {
+                $("#response").html(JSON.parse(data).backName);
+            });
+        });
+    }
+    function disconnect() {
+        if (stompClient!=null){
+            stompClient.disconnect();
+        }
+        setConnected(false);
+        console.log("disconnect");
+    }
+    function sendName() {
+        var name=$("#name").val();
+        stompClient.send("/abc",JSON.stringify({'name':name}));
+    }
+</script>
+</body>
+</html>
