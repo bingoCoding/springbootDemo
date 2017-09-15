@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xml:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>websocket 广播式</title>
 </head>
 <body onload="disconnect()">
@@ -15,12 +15,13 @@
     <div id="conversationDiv">
         <label>输入名字：</label><input id="name" type="text" />
         <button id="sendName" onclick="sendName()">发送</button>
-        <p id="response"></p>
+        <p id="ppp"></p>
     </div>
 </div>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"></script>
 <script type="text/javascript">
     var stompClient = null;
     function setConnected(connected) {
@@ -30,16 +31,19 @@
         $("#response").html();
     }
     function connect() {
-        var socket = new SockJs('/endpointURL');
+        /*连接SockJS的endpoint名称'/endpointURL'*/
+        var socket = new SockJS('/endpointURL');
+        /*使用STOMP子协议的客户端WebSocket*/
         stompClient = Stomp.over(socket);
 
         /*开启连接WebSocket服务器*/
         stompClient.connect({},function (frame) {
             setConnected(true);
             console.log('connected:'+frame);
-            /*订阅消息*/
-            stompClient.subscribe('/sendto',function (data) {
-                $("#response").html(JSON.parse(data).backName);
+            /*订阅消息，在控制器@SendTo定义'/sendto'*/
+            stompClient.subscribe('/topic/sendto',function (data) {
+                console.log(data);
+                $("#ppp").html(JSON.parse(data.body).backName);
             });
         });
     }
@@ -52,7 +56,7 @@
     }
     function sendName() {
         var name=$("#name").val();
-        stompClient.send("/abc",JSON.stringify({'name':name}));
+        stompClient.send("/abc",{},JSON.stringify({'name':name}));
     }
 </script>
 </body>

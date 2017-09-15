@@ -23,6 +23,7 @@ public class WebSoketConfig extends AbstractWebSocketMessageBrokerConfigurer {
      * 注册STOMP协议的节点（endpoint），并映射指定的URL
      * 并指定使用SockJS协议
      * @param stompEndpointRegistry
+     *
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
@@ -33,6 +34,9 @@ public class WebSoketConfig extends AbstractWebSocketMessageBrokerConfigurer {
      * 配置消息代理
      * 广播式应配置一个/topic消息代理
      * @param registry
+     *
+     *  topic : Use topic when there are more than one subscribers for a message.
+     *  queue : Use queue for peer to peer communication.
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {

@@ -11,8 +11,14 @@ import org.springframework.stereotype.Controller;
 public class MessageController {
 
     @MessageMapping("/abc")
-    @SendTo("sendto")
+    @SendTo("/topic/sendto")
     public UserBroker fabuMessage(UserMessage userMessage){
+        try {
+            System.out.println("*******************==");
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         UserBroker ub=new UserBroker();
         ub.setBackName("hello "+userMessage.getName());
         return ub;
