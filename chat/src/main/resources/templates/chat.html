@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Title</title>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
@@ -12,24 +12,27 @@
 <p>...</p>
 <form id="chat">
     <textarea rows="4" cols="60" name="text"></textarea>
-    <input type="submit">
+    <input type="submit" value="提交"/>
 </form>
+
 <script th:inline="javascript">
     $("#chat").submit(function (e) {
         e.preventDefault();
         var text = $("#chat").find("textarea[name='text']").val();
         stomSend(text);
+        $("#chat").find("textarea[name='text']").val("");
     });
     var sock = new SockJS("/pointAddress");
     var stomp = Stomp.over(sock);
-    stomp.connect("","",function (frame) {
+    stomp.connect('guest','guest',function (frame) {
         /*订阅，/queue/notifications 是控制器里 在 messagingTemplate convertAndSendToUser 中定义的。
         ＊这里加了一个/user，这个是必须的，固定的，使用了／user才会发消息到指定的人
         * */
         stomp.subscribe("/user/queue/notifications",handNotification);
     });
     function handNotification(message) {
-        $("#output").append("<b>"+message.body+"</b><br/>")
+        alert(message);
+        $("#output").append("<b>html"+message.body+"</b><br/>");
     }
     function stomSend(text) {
         stomp.send("/chat",{},text);
@@ -38,5 +41,8 @@
         sock.close();
     });
 </script>
+<div id="output">
+
+</div>
 </body>
 </html>

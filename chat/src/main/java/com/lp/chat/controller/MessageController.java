@@ -21,7 +21,9 @@ public class MessageController {
 
     @MessageMapping("/chat")
     public void handleChat(Principal principal,String msg){
+        System.err.println("111===========================msg::"+msg);
         if (principal.getName().equals("aaa")){
+            System.err.println("222=========================msg::"+msg);
             messagingTemplate.convertAndSendToUser("bbb","/queue/notifications",
                     principal.getName()+"-send: "+msg);
         }else{
