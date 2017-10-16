@@ -3,15 +3,18 @@ package com.example.springbootjpa.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import java.io.Serializable;
 
 @Entity
+@NamedQuery(name = "Person.withNameAndAddressNamedQuery",
+        query = "select p from Person p where p.name= ?1 and p.address= ?2 ")
 public class Person implements Serializable {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     private String name;
-    private int age;
+    private Integer age;
     private String address;
 
     public int getId() {
