@@ -1,4 +1,4 @@
-package com.example.springmvc.springdata;
+package com.example.springbatch.batch;
 
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.batch.item.validator.Validator;
